@@ -1,31 +1,40 @@
-from flask import Flask, flash, redirect, render_template, request, session, abort, url_for
+from flask import Flask, redirect, render_template, request, session, abort, url_for
 import os, subprocess
 from flask_wtf import FlaskForm
-from flask_sqlalchemy import SQLAlchemy
 from wtforms import StringField, PasswordField, TextAreaField
 from wtforms.validators import InputRequired
 from flask_bcrypt import Bcrypt
+from databases import db
+from create_app import app
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config.update(dict(
-    SECRET_KEY="powerful secretkey",
-    WTF_CSRF_SECRET_KEY="a csrf secret key"
-))
-db = SQLAlchemy(app)
-db.create_all()
+# app = Flask(__name__)
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config.update(dict(
+#     SECRET_KEY="powerful secretkey",
+#     WTF_CSRF_SECRET_KEY="a csrf secret key"
+# ))
+
+# db = SQLAlchemy(app)
+# db.init_app(app)
+
+# with app.app_context():
+
+	# db.create_all()
 
 bcrypt = Bcrypt()
+
+users_dict = {}
 # session['logged_in'] = False
 
-class Users(db.Model):
-	user_id = db.Column(db.Integer, primary_key=True)
-	username = db.Column(db.String(20), unique=True, nullable=False)
-	# password = db.Column(db.String(20))
-	pswd_hash = db.Column(db.String(128), nullable=False)
-	# two_fa = db.Column(db.String(10), nullable=False)
-	two_fa_hash = db.Column(db.String(128), nullable=False)
+# class Users(db.Model):
+# 	user_id = db.Column(db.Integer, primary_key=True)
+# 	username = db.Column(db.String(20), unique=True, nullable=False)
+# 	# password = db.Column(db.String(20))
+# 	pswd_hash = db.Column(db.String(128), nullable=False)
+# 	# two_fa = db.Column(db.String(10), nullable=False)
+# 	two_fa_hash = db.Column(db.String(128), nullable=False)
 
 	# def __repr__(self):
 	# 	return '<User %r>' % self.username
@@ -99,9 +108,10 @@ def register():
 			pw_hash = bcrypt.generate_password_hash(pword, 12)
 			two_fa_hash = bcrypt.generate_password_hash(two_fa, 12)
 
-			register = Users(username = uname, pswd_hash=pw_hash, two_fa_hash=two_fa_hash)
-			db.session.add(register)
-			db.session.commit()
+			# register = Users(username = uname, pswd_hash=pw_hash, two_fa_hash=two_fa_hash)
+			# db.session.add(register)
+			# db.session.commit()
+			users_dict[uname] = [pw_hash, two_fa_hash]
 
 			return " <a href=\"/login\" id=success >Registration Success, Please Login </a> <br> \
 			 <a href = \"/register\" > Register another user </a>"
@@ -125,11 +135,12 @@ def login():
 		two_fa = request.form['two_fa']
 	
 		# Validate username, password and 2fa
-		user = Users.query.filter_by(username=uname).first()
+		# user = Users.query.filter_by(username=uname).first()
+		user = users_dict[uname]
 		
 		if user is not None:
-			pw_hash = user.pswd_hash
-			two_fa_hash = user.two_fa_hash
+			pw_hash = users_dict[uname][0]
+			two_fa_hash = users_dict[uname][1]
 			
 			if bcrypt.check_password_hash(pw_hash, pword) and bcrypt.check_password_hash(two_fa_hash, two_fa) :
 			
