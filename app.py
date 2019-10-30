@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField
 from wtforms.validators import InputRequired
 from flask_bcrypt import Bcrypt
-from databases import db
+# from databases import db
 from create_app import app
 
 # app = Flask(__name__)
