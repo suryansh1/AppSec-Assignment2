@@ -157,5 +157,5 @@ if __name__ == "__main__":
 
 	# app.config['SECRET_KEY'] = "someRandomSecretKeyHahahaha"
 	db.create_all()
-
+	print("Successfully created DB")
 	app.run(debug=True, host='127.0.0.1', port=1337)
