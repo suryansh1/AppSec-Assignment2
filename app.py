@@ -21,7 +21,8 @@ class User(db.Model):
 	username = db.Column(db.String(20), unique=True, nullable=False)
 	# password = db.Column(db.String(20))
 	pswd_hash = db.Column(db.String(128), nullable=False)
-	two_fa = db.Column(db.String(10), nullable=False)
+	# two_fa = db.Column(db.String(10), nullable=False)
+	two_fa_hash = db.Column(db.String(128), nullable=False)
 
 	def __repr__(self):
 		return '<User %r>' % self.username
@@ -30,12 +31,12 @@ class User(db.Model):
 class RegistrationForm(FlaskForm):
 	uname = StringField("username")
 	pword = PasswordField("password")
-	two_fa = PasswordField("two_factor_authentication")
+	two_fa = PasswordField("two_factor_authentication", id='2fa')
 
 class LoginForm(FlaskForm):
 	uname = StringField("username")
 	pword = PasswordField("password")
-	two_fa = PasswordField("two_factor_authentication")
+	two_fa = PasswordField("two_factor_authentication", id='2fa')
 
 class SpellCheckForm(FlaskForm):
 	inputtext = TextAreaField("inputtext")
@@ -90,8 +91,9 @@ def register():
 
 			# Encrypt password and 2fa, store in dict
 			pw_hash = bcrypt.generate_password_hash(pword, 12)
+			two_fa_hash = bcrypt.generate_password_hash(two_fa, 12)
 
-			register = User(username = uname, pswd_hash=pw_hash, two_fa=two_fa)
+			register = User(username = uname, pswd_hash=pw_hash, two_fa_hash=two_fa_hash)
 			db.session.add(register)
 			db.session.commit()
 
@@ -120,8 +122,9 @@ def login():
 		user = User.query.filter_by(username=uname).first()
 		
 		pw_hash = user.pswd_hash
+		two_fa_hash = user.two_fa_hash
 		
-		if bcrypt.check_password_hash(pw_hash, pword):
+		if bcrypt.check_password_hash(pw_hash, pword) and bcrypt.check_password_hash(two_fa_hash, two_fa) :
 		
 		# if login is not None:
 
