@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt()
 # session['logged_in'] = False
 
-class User(db.Model):
+class Users(db.Model):
 	user_id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(20), unique=True, nullable=False)
 	# password = db.Column(db.String(20))
@@ -91,13 +91,13 @@ def register():
 		pword = request.form['pword']
 		two_fa = request.form['two_fa']
 
-		if len(uname) < 20 and  len(two_fa) < 10:
+		if len(uname) < 20 and  len(two_fa) < 20:
 
 			# Encrypt password and 2fa, store in dict
 			pw_hash = bcrypt.generate_password_hash(pword, 12)
 			two_fa_hash = bcrypt.generate_password_hash(two_fa, 12)
 
-			register = User(username = uname, pswd_hash=pw_hash, two_fa_hash=two_fa_hash)
+			register = Users(username = uname, pswd_hash=pw_hash, two_fa_hash=two_fa_hash)
 			db.session.add(register)
 			db.session.commit()
 
@@ -123,7 +123,7 @@ def login():
 		two_fa = request.form['two_fa']
 	
 		# Validate username, password and 2fa
-		user = User.query.filter_by(username=uname).first()
+		user = Users.query.filter_by(username=uname).first()
 		
 		if user is not None:
 			pw_hash = user.pswd_hash
