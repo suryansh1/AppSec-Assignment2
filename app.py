@@ -138,6 +138,6 @@ def logout():
 
 if __name__ == "__main__":
 
-	app.secret_key = os.urandom(12)
+	app.config['SECRET_KEY'] = os.urandom(12)
 	db.create_all()
 	app.run(debug=True, host='127.0.0.1', port=1337)
