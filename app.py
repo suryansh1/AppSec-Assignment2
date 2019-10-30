@@ -48,7 +48,9 @@ def home():
 
 @app.route("/spell_check", methods=['POST', 'GET'])
 def spell_check():
-	if not session.get('logged_in'):
+	
+	if 'username' not in session:
+	# if not session.get('logged_in'):
 		return redirect(url_for('login'))
 
 	else:
@@ -82,7 +84,7 @@ def register():
 	form = RegistrationForm()
 
 	# print (form.errors)
-	print(	session['logged_in'] )
+	# print(	session['logged_in'] )
 
 	if request.method == 'POST':
 		uname = request.form['uname']
@@ -113,7 +115,7 @@ def register():
 def login():
 
 	form = LoginForm()
-	print(	session['logged_in'] )
+	# print(	session['logged_in'] )
 	if request.method == 'POST':
 
 		uname = request.form['uname']
@@ -132,7 +134,8 @@ def login():
 			# if login is not None:
 
 			# if len(uname) < 5:
-				session['logged_in'] = True
+				# session['logged_in'] = True
+				session['username'] = uname
 				return " <a href=\"/spell_check\" id=result >Login Success </a>"
 
 			else:
@@ -145,7 +148,9 @@ def login():
 
 @app.route("/logout")
 def logout():
-	session['logged_in'] = False
+	# session['logged_in'] = False
+	session.pop('username', None)
+
 	return home()
 
 if __name__ == "__main__":
