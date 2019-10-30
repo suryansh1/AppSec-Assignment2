@@ -9,6 +9,10 @@ from flask_bcrypt import Bcrypt
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.update(dict(
+    SECRET_KEY="powerful secretkey",
+    WTF_CSRF_SECRET_KEY="a csrf secret key"
+))
 db = SQLAlchemy(app)
 bcrypt = Bcrypt()
 
@@ -138,6 +142,6 @@ def logout():
 
 if __name__ == "__main__":
 
-	app.config['SECRET_KEY'] = os.urandom(12)
+	# app.config['SECRET_KEY'] = "someRandomSecretKeyHahahaha"
 	db.create_all()
 	app.run(debug=True, host='127.0.0.1', port=1337)
