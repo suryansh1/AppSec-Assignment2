@@ -15,6 +15,7 @@ app.config.update(dict(
 ))
 db = SQLAlchemy(app)
 bcrypt = Bcrypt()
+# session['logged_in'] = False
 
 class User(db.Model):
 	user_id = db.Column(db.Integer, primary_key=True)
@@ -80,7 +81,8 @@ def spell_check():
 def register():
 	form = RegistrationForm()
 
-	print (form.errors)
+	# print (form.errors)
+	print(	session['logged_in'] )
 
 	if request.method == 'POST':
 		uname = request.form['uname']
@@ -111,7 +113,7 @@ def register():
 def login():
 
 	form = LoginForm()
-
+	print(	session['logged_in'] )
 	if request.method == 'POST':
 
 		uname = request.form['uname']
@@ -121,20 +123,23 @@ def login():
 		# Validate username, password and 2fa
 		user = User.query.filter_by(username=uname).first()
 		
-		pw_hash = user.pswd_hash
-		two_fa_hash = user.two_fa_hash
-		
-		if bcrypt.check_password_hash(pw_hash, pword) and bcrypt.check_password_hash(two_fa_hash, two_fa) :
-		
-		# if login is not None:
+		if user is not None:
+			pw_hash = user.pswd_hash
+			two_fa_hash = user.two_fa_hash
+			
+			if bcrypt.check_password_hash(pw_hash, pword) and bcrypt.check_password_hash(two_fa_hash, two_fa) :
+			
+			# if login is not None:
 
-		# if len(uname) < 5:
-			session['logged_in'] = True
-			return " <a href=\"/spell_check\" id=result >Login Success </a>"
+			# if len(uname) < 5:
+				session['logged_in'] = True
+				return " <a href=\"/spell_check\" id=result >Login Success </a>"
 
+			else:
+				return " <a href=\"/login\" id=result >Login Failure </a>"
 		else:
-			return " <a href=\"/login\" id=result >Login Failure </a>"
-	
+				return " <a href=\"/login\" id=result >Login Failure </a>"
+		
 	return render_template('login.html', form=form)
 
 
@@ -147,4 +152,5 @@ if __name__ == "__main__":
 
 	# app.config['SECRET_KEY'] = "someRandomSecretKeyHahahaha"
 	db.create_all()
+
 	app.run(debug=True, host='127.0.0.1', port=1337)
