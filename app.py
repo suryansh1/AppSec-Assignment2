@@ -14,6 +14,8 @@ app.config.update(dict(
     WTF_CSRF_SECRET_KEY="a csrf secret key"
 ))
 db = SQLAlchemy(app)
+db.create_all()
+
 bcrypt = Bcrypt()
 # session['logged_in'] = False
 
@@ -156,6 +158,5 @@ def logout():
 if __name__ == "__main__":
 
 	# app.config['SECRET_KEY'] = "someRandomSecretKeyHahahaha"
-	db.create_all()
-	print("Successfully created DB")
+	# print("Successfully created DB")
 	app.run(debug=True, host='127.0.0.1', port=1337)
