@@ -136,9 +136,10 @@ def login():
 	
 		# Validate username, password and 2fa
 		# user = Users.query.filter_by(username=uname).first()
-		user = users_dict[uname]
+		# user = users_dict[uname]
+		if uname in users_dict.keys():
 		
-		if user is not None:
+		# if user is not None:
 			pw_hash = users_dict[uname][0]
 			two_fa_hash = users_dict[uname][1]
 			
