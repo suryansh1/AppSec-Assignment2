@@ -1,0 +1,6 @@
+WTforms
+flask
+flask_wtf
+flask-sqlalchemy
+bcrypt
+flask-bcrypt

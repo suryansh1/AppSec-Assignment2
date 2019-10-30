@@ -1,0 +1,16 @@
+
+{% from "_formhelpers.html" import render_field %}
+<html>
+<head>
+<title>Spell Check</title>
+</head>
+<body>
+	<form method="POST" action="/spell_check">
+	   <dl>
+	    {{ form.csrf_token }}
+	    {{ render_field(form.inputtext) }}
+	    <input type="submit" value="Spell Check">
+	    </dl>
+	</form>
+</body>
+</html>
