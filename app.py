@@ -102,15 +102,12 @@ def register():
 		pword = request.form['pword']
 		two_fa = request.form['two_fa']
 
-		if len(uname) < 20 and  len(two_fa) < 20:
+		if len(uname) < 20 and  len(pword)<20 and len(two_fa) < 20:
 
 			# Encrypt password and 2fa, store in dict
 			pw_hash = bcrypt.generate_password_hash(pword, 12)
 			two_fa_hash = bcrypt.generate_password_hash(two_fa, 12)
 
-			# register = Users(username = uname, pswd_hash=pw_hash, two_fa_hash=two_fa_hash)
-			# db.session.add(register)
-			# db.session.commit()
 			users_dict[uname] = [pw_hash, two_fa_hash]
 
 			return " <a href=\"/login\" id=success >Registration Success, Please Login </a> <br> \
@@ -145,10 +142,6 @@ def login():
 			
 			if bcrypt.check_password_hash(pw_hash, pword) and bcrypt.check_password_hash(two_fa_hash, two_fa) :
 			
-			# if login is not None:
-
-			# if len(uname) < 5:
-				# session['logged_in'] = True
 				session['username'] = uname
 				return " <a href=\"/spell_check\" id=result >Login Success </a>"
 
@@ -171,4 +164,4 @@ if __name__ == "__main__":
 
 	# app.config['SECRET_KEY'] = "someRandomSecretKeyHahahaha"
 	# print("Successfully created DB")
-	app.run(debug=True, host='127.0.0.1', port=1337)
+	app.run(debug=True, host='127.0.0.1', port=5000)
